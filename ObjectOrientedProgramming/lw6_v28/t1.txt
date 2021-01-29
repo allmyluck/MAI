@@ -1,0 +1,22 @@
+add 2 2 4 4
+add 1 1 0 0
+del 3
+add 0 0 3 3
+print_all
+del 2
+size
+print_all
+add
+4 4 8 8
+add
+6 6 2 2
+add
+5 5 1 1
+add
+0 0 3 3
+del 4
+del 3
+del 0
+print_all
+size
+exit
