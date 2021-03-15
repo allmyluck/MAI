@@ -2,5 +2,5 @@
 
 1)sbcl
 
-2)in sbcl (load (compile-file "*.lisp"))
+2)in sbcl (load (compile-file "main.lisp"))
 
