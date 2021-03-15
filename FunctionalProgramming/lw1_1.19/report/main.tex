@@ -1,0 +1,138 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,1 
+по курсу \guillemotleft  Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-307Б-18 МАИ \textit{Токарев Никита}, \textnumero 21 по списку \\
+\makebox[7cm]{Контакты: {\tt tokarevnikita08@mail.ru} \hfill} \\
+\makebox[7cm]{Работа выполнена: 15.03.2021 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Примитивные функции и особые операторы в Common Lisp.
+
+\section{Цель работы}
+Изучить примитивные функции и особые операторы в Common Lisp.
+
+\section{Задание (вариант № 1.19 )}
+Запрограммируйте на языке Коммон Лисп функцию-предикат с тремя параметрами - действительными положительными числами a, b, c. Функция должна возвращать T (истину), если существует прямоугольный треугольник с длинами сторон a, b и c.
+
+\section{Оборудование студента}
+Процессор Intel® Core™ i3-5005U CPU @ 2.00GHz × 4, память: 3,8 Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+UBUNTU 18.04.5 LTS, компилятор sbcl
+
+\section{Идея, метод, алгоритм}
+Идея в том, чтобы посчитать по теореме пифагора предпологаемую длину гипотенузы и сравнить с максимальной по длине стороной. В данной программе реализованы две ключевые функции (AAL a b c) и (right-angled a b с).
+\begin{itemize}
+\setlength{\itemsep}{-1mm} % уменьшает расстояние между элементами списка
+\item (AAL a b c) - поиск максимальной по длине стороны треугольника и возврат суммы квадратов оставшихся двух сторон
+\item (right-angled a b с) - выборка из всех возможных успешных вариантов.
+\end{itemize}
+
+\section{Сценарий выполнения работы}
+\begin{itemize}
+\setlength{\itemsep}{-1mm}
+\item Анализ возможных реализаций поставленной задачи на common Lisp
+\item Изучение синтаксиса и основных функций common Lisp
+\item Реализация поставленной задачи на common Lisp
+\end{itemize}
+\section{Распечатка программы и её результаты}
+
+\subsection{Исходный код}
+\begin{verbatim}
+(defun square (x) (* x x))
+
+(defun right-angled (a b c)
+    (cond
+        ((equalp (square a) (AAL a b c)) T)
+        ((equalp (square b) (AAL a b c)) T)
+        ((equalp (square c) (AAL a b c)) T)
+    )
+)
+
+(defun AAL (a b c)
+    (if (> a b)
+        (if(> a c)
+            (+ (square b) (square c))
+            (+ (square a) (square b))
+        )
+        (if(> b c)
+            (+ (square a) (square c))
+            (+ (square a) (square b))
+        )
+    )
+)
+\end{verbatim}
+%\lstinputlisting{./lab2.lisp}
+
+\subsection{Результаты работы}
+\begin{verbatim}
+* (right-angled 5.0 3.0 4.0)
+
+T
+* (right-angled  2.2 3.3 4.2)
+
+NIL
+* (right-angled 3.84187454246 5.0 3.2)
+
+T
+* (right-angled 3.0 3.0 3.0)
+
+NIL
+\end{verbatim}
+%\lstinputlisting{./log2.lisp}
+
+\section{Дневник отладки}
+\begin{tabular}{|p{50pt}|p{130pt}|p{130pt}|p{70pt}|}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\ \hline
+15.03.2021 & Функция AAL возвращала ошибку:caught ERROR:illegal function call & Добавил функцию right-angled, где происходила выборка. AAL сделал вспомогательной.  &\\
+\hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+Замечаний нет.
+
+\section{Выводы}
+Данная работа позволила отойти от стандартного императивного программирования и взглянуть на решение поставленной задачи  в функциональной парадигме. Данный алгоритм тривиален и работает за константное время. Также хотелось бы отметить, что в ходе данной работы познакомился с синтаксисом common Lisp и некоторыми основными функциями common Lisp.
+
+\end{document}

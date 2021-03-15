@@ -1,0 +1,22 @@
+(defun square (x) (* x x))
+
+(defun right-angled (a b c)
+    (cond
+        ((equalp (square a) (AAL a b c)) T)
+        ((equalp (square b) (AAL a b c)) T)
+        ((equalp (square c) (AAL a b c)) T)
+    )
+)
+
+(defun AAL (a b c)
+    (if (> a b)
+        (if(> a c)
+            (+ (square b) (square c))
+            (+ (square a) (square b))
+        )
+        (if(> b c)
+            (+ (square a) (square c))
+            (+ (square a) (square b))
+        )
+    )
+)
