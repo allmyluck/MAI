@@ -1,0 +1,6 @@
+(sum-product2 '(1 2))
+(sum-product2 '(1 2 3 4 5))
+(sum-product2 '(1 -2 1 -5 7))
+(sum-product2 '(1))
+(sum-product2 '(1 2 1 2 1 2 1 2 1 2))
+(sum-product2 '())

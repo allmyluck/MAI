@@ -1,0 +1,138 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,2 
+по курсу \guillemotleft  Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-307Б-18 МАИ \textit{Токарев Никита}, \textnumero 21 по списку \\
+\makebox[7cm]{Контакты: {\tt tokarevnikita08@mail.ru} \hfill} \\
+\makebox[7cm]{Работа выполнена: 21.03.2021 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Простейшие функции работы со списками common Lisp.
+
+\section{Цель работы}
+Изучить  простейшие функции работы со списками common Lisp.
+
+\section{Задание (вариант № 2.9)}
+Дан список действительных чисел ($x_{1}$ ... $x_{n}$), \(n \geqslant 2\).
+Запрограммируйте рекурсивно на языке common Lisp функцию, вычисляющую выражение вида:\\
+
+$(x_{1} * x_{n}) + (x_{2} * x_{n-1}) + ... + (x_{n} * x_{1})$.
+
+\section{Оборудование студента}
+Процессор Intel® Core™ i3-5005U CPU @ 2.00GHz × 4, память: 3,8 Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+UBUNTU 18.04.5 LTS, компилятор sbcl
+
+\section{Идея, метод, алгоритм}
+Идея в том, чтобы посчитать произведение n-го элемента списка list и реверсированного списка list и просуммировать полученные значения, используя рекурсию. В данной программе реализованы две ключевые функции (sum-product1 list1 list2) и (sum-product2 list).
+\begin{itemize}
+\setlength{\itemsep}{-1mm} % уменьшает расстояние между элементами списка
+\item (sum-product2 list) - вызов функции (sum-product1 list1 list2), где list = list1, list2 = (reverse list), при это длина входного списка не менее 2 и элементы списка действительные числа.
+\item (sum-product1 list1 list2) - рекурсивная функция: произведение n-х элементов списков  list1 и list2  суммируется с результатом данной вызванной функции, где входными данными являются списки: list1 = list1(n + 1,...), list2 = list2(n + 1,...).
+\end{itemize}
+
+\section{Сценарий выполнения работы}
+\begin{itemize}
+\setlength{\itemsep}{-1mm}
+\item Анализ возможных реализаций поставленной задачи на common Lisp
+\item Изучение синтаксиса и основных функций работы со списками common Lisp
+\item Реализация поставленной задачи на common Lisp
+\end{itemize}
+\section{Распечатка программы и её результаты}
+
+\subsection{Исходный код}
+\begin{verbatim}
+(defun sum-product1 (list1 list2)
+    (cond 
+        ((null list1) 0)
+        (t (+ (* (first list1)(first list2))
+            (sum-product1 (rest list1)(rest list2))))
+    )
+)
+
+(defun sum-product2 (list)
+    (if (>= (list-length list) 2)
+        (sum-product1 list (reverse list))
+    )
+)
+\end{verbatim}
+%\lstinputlisting{./lab2.lisp}
+
+\subsection{Результаты работы}
+\begin{verbatim}
+* (sum-product2 '(1 2))
+
+4
+* (sum-product2 '(1 2 3 4 5))
+
+35
+* (sum-product2 '(1 -2 1 -5 7))
+
+35
+* (sum-product2 '(1))
+
+NIL
+* (sum-product2 '(1 2 1 2 1 2 1 2 1 2))
+
+20
+* (sum-product2 '())
+
+NIL
+\end{verbatim}
+%\lstinputlisting{./log2.lisp}
+
+\section{Дневник отладки}
+\begin{tabular}{|p{50pt}|p{130pt}|p{130pt}|p{70pt}|}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\ \hline
+21.03.2021 & Ошибка в sum-product2: The value NIL is not of type NUMBER.   & Изменил условие: ((null list1) NIL) в sum-product2 на ((null list1) 0) .  &\\
+\hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+Замечаний нет.
+
+\section{Выводы}
+В ходе данной работы я познакомился с представлением и основными особенностями списков в common Lisp. Список в common Lisp представляет собой S-выражение вида: атом | список(хвост). Также хотелось бы отметить: в (sum-product1 list1 list2)  реализована хвостовая рекурсия.
+
+\end{document}
