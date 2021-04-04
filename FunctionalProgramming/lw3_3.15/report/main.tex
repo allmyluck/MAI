@@ -1,0 +1,175 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,3 
+по курсу \guillemotleft  Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-307Б-18 МАИ \textit{Токарев Никита}, \textnumero 21 по списку \\
+\makebox[7cm]{Контакты: {\tt tokarevnikita08@mail.ru} \hfill} \\
+\makebox[7cm]{Работа выполнена: 04.04.2021 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Последовательности, массивы и управляющие конструкции Коммон Лисп.
+
+\section{Цель работы}
+Изучить  Последовательности, массивы и управляющие конструкции Коммон Лисп.
+
+\section{Задание (вариант № 3.15)}
+Запрограммировать на языке Коммон Лисп функцию, принимающую в качестве аргументов следующие:\newline
+    A - двумерный массив, представляющий действительную матрицу размера m*n,\newline
+    u - вектор (строка) действительных чисел длины n,\newline
+    v - вектор (столбец) действительных чисел длины m+1,\newline
+    i - номер строки, 1<=i<=m,\newline
+    j - номер столбца, 1<=j<=n.\newline
+
+Функция должна возвращать новую матрицу размера (m+1)*(n+1), полученную из A путём вставки элементов u в качестве новой строки после строки с номером i. последующей вставки элементов v в качестве нового столбца после столбца с номером j.
+
+
+\section{Оборудование студента}
+Процессор Intel® Core™ i3-5005U CPU @ 2.00GHz × 4, память: 3,8 Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+UBUNTU 18.04.5 LTS, компилятор sbcl
+
+\section{Идея, метод, алгоритм}
+Метод состоит из двух итераций. Идея в том, чтобы для начала вставить u-вектор на место i+1 строки матрицы b. Затем же в полученную матрицу на место j+1 столбца вставить v-вектор. Мне предстоит разбить матрицу на составные части и по новому собрать ее. В программе две основные функции:
+\begin{itemize}
+\setlength{\itemsep}{-1mm} % уменьшает расстояние между элементами списка
+\item (line-extend-matrix a k v) - В данной функции происходит создание матрицы b и копирование элементов матрицы до элемента a[k][...]. Затем же вставка вектора строки на позицию b[k][...] и копирование остальных элементов, если оно необходимо. 
+\item (sum-product1 list1 list2) - рекурсивная функция: произведение n-х элементов списков  list1 и list2  суммируется с результатом данной вызванной функции, где входными данными являются списки: list1 = list1(n + 1,...), list2 = list2(n + 1,...).
+\end{itemize}
+
+\section{Сценарий выполнения работы}
+\begin{itemize}
+\setlength{\itemsep}{-1mm}
+\item Анализ возможных реализаций поставленной задачи на common Lisp
+\item Изучение синтаксиса и основных функций работы со списками common Lisp
+\item Реализация поставленной задачи на common Lisp
+\end{itemize}
+\section{Распечатка программы и её результаты}
+
+\subsection{Исходный код}
+Значения тестовых глобальных переменных представлено в исходном коде.
+\begin{verbatim}
+(defun column-extend-matrix (a k u)
+  (let ((m (array-dimension a 0))
+        (n (array-dimension a 1)))
+    (let ((b (make-array (list m (+ 1 n))))) ; b = Matrix(* m (1 + n)) 
+      (dotimes (i m)
+        (dotimes (j k)
+          (setf (aref b i j) (aref a i j)))) ; b[i][j] = a[i][j]
+      (loop
+        :for i :below m
+        :do (setf (aref b i k) (aref u i))) ; b[i][k] = u[i]
+      (dotimes (i m)
+        (loop :for j :from k :to (- n 1) :do 
+          (setf (aref b i (+ 1 j)) (aref a i j)))) ; b[i][1 + j] = a[i][j]
+      b)))
+    
+(defun line-extend-matrix (a k v)
+  (let ((m (array-dimension a 0))
+        (n (array-dimension a 1)))
+    (let ((b (make-array (list (+ 1 m) n)))) ; b = Matrix(* (1 + m) n)
+      (dotimes (i k)
+        (dotimes (j n)
+          (setf (aref b i j) (aref a i j)))) ; b[i][j] = a[i][j]
+      (loop
+        :for j :below n
+        :do (setf (aref b k j) (aref v j))) ; b[k][j] = v[j], j : 0 to n
+      (dotimes (j n)
+        (loop :for i :from k :to (- m 1) :do
+          (setf (aref b (+ 1 i) j) (aref a i j)))) ; b[i + 1][j] = a[i][j]
+      b)))
+
+(defun extend-matrix (a u v i j)
+  (column-extend-matrix (line-extend-matrix a (+ 1 i) u) (+ 1 j) v)
+)
+
+(defvar m1 (make-array '(3 3) :initial-contents '((0 0 0 ) (0 0 0) (0 0 0))))
+(defvar u1 #(1 1 1))
+(defvar v1 #(2 2 2 2))
+(defvar m2 (make-array '(2 4) :initial-contents '((0 0 0 0) (0 0 0 0))))
+(defvar u2 #(1 1 1 1))
+(defvar v2 #(2 2 2))
+(defvar m3 (make-array '(3 4) :initial-contents '((0 0 0 0) (0 0 0 0) (0 0 0 0))))
+(defvar u3 #(1 1 1 1))
+(defvar v3 #(2 2 2 2))
+(defvar m4 (make-array '(1 1) :initial-contents '((0))))
+(defvar u4 #(1))
+(defvar v4 #(2 2))
+;(extend-matrix m1 u1 v1 0 0)
+;(extend-matrix m2 u2 v2 1 1)
+;(extend-matrix m3 u3 v3 2 3)
+;(extend-matrix m4 u4 v4 0 0)
+\end{verbatim}
+%\lstinputlisting{./lab2.lisp}
+
+\subsection{Результаты работы}
+\begin{verbatim}
+* (extend-matrix m1 u1 v1 0 0)
+
+#2A((0 2 0 0) (1 2 1 1) (0 2 0 0) (0 2 0 0))
+* (extend-matrix m2 u2 v2 1 1)
+
+#2A((0 0 2 0 0) (0 0 2 0 0) (1 1 2 1 1))
+* (extend-matrix m3 u3 v3 2 3)
+
+#2A((0 0 0 0 2) (0 0 0 0 2) (0 0 0 0 2) (1 1 1 1 2))
+* (extend-matrix m4 u4 v4 0 0)
+
+#2A((0 2) (1 2))
+\end{verbatim}
+%\lstinputlisting{./log2.lisp}
+
+\section{Дневник отладки}
+\begin{tabular}{|p{50pt}|p{130pt}|p{130pt}|p{70pt}|}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\ \hline
+04.04.2021 & Вставка u и v на позицию i и j соответсвенно. По условию вставка происходит после i и j.  & Изменил входные данный у функции: (column-extend-matrix (line-extend-matrix a (+ 1 i) u) (+ 1 j) v) .  &\\
+\hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+Нумерация элементов в матрице: [0][0]...[m][n].
+
+\section{Выводы}
+В ходе данной работы мне удалось познакомиться со встроенными функциями/интсрументами, а также управляющими конструкциями коммон лисп с помощью которых мне удалось реализовать классический обход по матрице, используя циклы. 
+
+\end{document}
