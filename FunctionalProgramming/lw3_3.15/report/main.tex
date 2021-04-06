@@ -36,7 +36,7 @@
 \begin{flushright}
 Студент группы 8О-307Б-18 МАИ \textit{Токарев Никита}, \textnumero 21 по списку \\
 \makebox[7cm]{Контакты: {\tt tokarevnikita08@mail.ru} \hfill} \\
-\makebox[7cm]{Работа выполнена: 04.04.2021 \hfill} \\
+\makebox[7cm]{Работа выполнена: 06.04.2021 \hfill} \\
 \ \\
 Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
 \makebox[7cm]{Отчет сдан: \hfill} \\
@@ -102,7 +102,7 @@ UBUNTU 18.04.5 LTS, компилятор sbcl
         (loop :for j :from k :to (- n 1) :do 
           (setf (aref b i (+ 1 j)) (aref a i j)))) ; b[i][1 + j] = a[i][j]
       b)))
-    
+
 (defun line-extend-matrix (a k v)
   (let ((m (array-dimension a 0))
         (n (array-dimension a 1)))
@@ -119,9 +119,11 @@ UBUNTU 18.04.5 LTS, компилятор sbcl
       b)))
 
 (defun extend-matrix (a u v i j)
-  (column-extend-matrix (line-extend-matrix a (+ 1 i) u) (+ 1 j) v)
+  (array-dimension a 0)
+  (array-dimension a 1)
+  (if (and (and (<= i (array-dimension a 0)) (<= j (array-dimension a 1))) (and (> i 0) (> j 0))) (column-extend-matrix (line-extend-matrix a i u) j v))
 )
-
+;test_variables
 (defvar m1 (make-array '(3 3) :initial-contents '((0 0 0 ) (0 0 0) (0 0 0))))
 (defvar u1 #(1 1 1))
 (defvar v1 #(2 2 2 2))
@@ -138,6 +140,8 @@ UBUNTU 18.04.5 LTS, компилятор sbcl
 ;(extend-matrix m2 u2 v2 1 1)
 ;(extend-matrix m3 u3 v3 2 3)
 ;(extend-matrix m4 u4 v4 0 0)
+;(extend-matrix m4 u4 v4 1 1)
+;(extend-matrix m4 u4 v4 2 2)
 \end{verbatim}
 %\lstinputlisting{./lab2.lisp}
 
@@ -145,14 +149,17 @@ UBUNTU 18.04.5 LTS, компилятор sbcl
 \begin{verbatim}
 * (extend-matrix m1 u1 v1 0 0)
 
-#2A((0 2 0 0) (1 2 1 1) (0 2 0 0) (0 2 0 0))
-* (extend-matrix m2 u2 v2 1 1)
+NIL
+* (extend-matrix m1 u1 v1 1 1)
 
-#2A((0 0 2 0 0) (0 0 2 0 0) (1 1 2 1 1))
+#2A((0 2 0 0) (1 2 1 1) (0 2 0 0) (0 2 0 0))
 * (extend-matrix m3 u3 v3 2 3)
 
-#2A((0 0 0 0 2) (0 0 0 0 2) (0 0 0 0 2) (1 1 1 1 2))
-* (extend-matrix m4 u4 v4 0 0)
+#2A((0 0 0 2 0) (0 0 0 2 0) (1 1 1 2 1) (0 0 0 2 0))
+* (extend-matrix m4 u4 v4 2 2)
+
+NIL
+* (extend-matrix m4 u4 v4 1 1)
 
 #2A((0 2) (1 2))
 \end{verbatim}
@@ -162,12 +169,14 @@ UBUNTU 18.04.5 LTS, компилятор sbcl
 \begin{tabular}{|p{50pt}|p{130pt}|p{130pt}|p{70pt}|}
 \hline
 Дата & Событие & Действие по исправлению & Примечание \\ \hline
-04.04.2021 & Вставка u и v на позицию i и j соответсвенно. По условию вставка происходит после i и j.  & Изменил входные данный у функции: (column-extend-matrix (line-extend-matrix a (+ 1 i) u) (+ 1 j) v) .  &\\
+04.04.2021 & Вставка u и v на позицию i и j соответсвенно. По условию вставка происходит после i и j.  & Изменил входные данный у функции: (column-extend-matrix (line-extend-matrix a (+ 1 i) u) (+ 1 j) v) . &\\
+\hline
+06.04.2021 & i >=0 и j>=0  & Добавил ограничение, такое что 0<i<=m,0<j<=n в (defun extend-matrix a u v i j) &\\
 \hline
 \end{tabular}
 
 \section{Замечания автора по существу работы}
-Нумерация элементов в матрице: [0][0]...[m][n].
+Замечаний нет.
 
 \section{Выводы}
 В ходе данной работы мне удалось познакомиться со встроенными функциями/интсрументами, а также управляющими конструкциями коммон лисп с помощью которых мне удалось реализовать классический обход по матрице, используя циклы. 

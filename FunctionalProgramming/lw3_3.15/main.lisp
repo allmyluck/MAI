@@ -29,9 +29,10 @@
       b)))
 
 (defun extend-matrix (a u v i j)
-  (column-extend-matrix (line-extend-matrix a (+ 1 i) u) (+ 1 j) v)
+  (array-dimension a 0)
+  (array-dimension a 1)
+  (if (and (and (<= i (array-dimension a 0)) (<= j (array-dimension a 1))) (and (> i 0) (> j 0))) (column-extend-matrix (line-extend-matrix a i u) j v))
 )
-
 ;test_variables
 (defvar m1 (make-array '(3 3) :initial-contents '((0 0 0 ) (0 0 0) (0 0 0))))
 (defvar u1 #(1 1 1))
@@ -49,3 +50,5 @@
 ;(extend-matrix m2 u2 v2 1 1)
 ;(extend-matrix m3 u3 v3 2 3)
 ;(extend-matrix m4 u4 v4 0 0)
+;(extend-matrix m4 u4 v4 1 1)
+;(extend-matrix m4 u4 v4 2 2)
