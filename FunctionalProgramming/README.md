@@ -5,5 +5,5 @@
 2)in sbcl (load (compile-file "main.lisp"))
 
 
-points: 28
+points: 42
 

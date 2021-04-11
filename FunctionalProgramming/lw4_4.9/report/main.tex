@@ -1,0 +1,167 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,4 
+по курсу \guillemotleft  Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-307Б-18 МАИ \textit{Токарев Никита}, \textnumero 21 по списку \\
+\makebox[7cm]{Контакты: {\tt tokarevnikita08@mail.ru} \hfill} \\
+\makebox[7cm]{Работа выполнена: 11.04.2021 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Знаки и строки.
+
+\section{Цель работы}
+Изучить  знаки и строки, а также методы работы с ними в Коммон Лисп.
+
+\section{Задание (вариант № 4.9)}
+Запрограммировать на языке Коммон Лисп функцию с двумя параметрами: char - знак, sentence - строка предложения. Функция должна подсчитать число вхождений знака char в последнее слово предложения sentence. Сравнение как латинских букв, так и русских должно быть регистро-независимым.
+
+
+\section{Оборудование студента}
+Процессор Intel® Core™ i3-5005U CPU @ 2.00GHz × 4, память: 3,8 Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+UBUNTU 18.04.5 LTS, компилятор sbcl
+
+\section{Идея, метод, алгоритм}
+Идея в том, чтобы начать поиск от последнего элемента игнорируя различные знаки(.,?,",!) в конце предложения и до первого пробела или конца предложения(если предложение состоит из одного слова). В программе одна основная функции:
+\begin{itemize}
+\setlength{\itemsep}{-1mm} % уменьшает расстояние между элементами списка
+\item (last-word-char-count ch str) - В данной функции происходит поэлементное сравнение элементов с условиями выхода:следующий элемент пробел или начало предложения(если предложение состоит из одного слова).
+\end{itemize}
+
+\section{Сценарий выполнения работы}
+\begin{itemize}
+\setlength{\itemsep}{-1mm}
+\item Анализ возможных реализаций поставленной задачи на common Lisp
+\item Изучение синтаксиса и основных функций работы со списками common Lisp
+\item Реализация поставленной задачи на common Lisp
+\end{itemize}
+\section{Распечатка программы и её результаты}
+
+\subsection{Исходный код}
+Значения тестовых функций представлено в исходном коде.
+\begin{verbatim}
+(defun whitespace-char(ch)
+    (member ch '(#\Space #\Tab #\Newline))
+)
+
+(defun endSentence-char(ch)
+    (member ch '(#\! #\? #\. #\"))
+)
+
+(defun last-word-char-count(ch str)
+    (let
+        (
+            (res 0)
+            (cur-ch nil)
+        )
+        (loop for i from (- (length str) 1) downto 0 do
+            (setq cur-ch (char str i))	
+            (if (and (char-equal ch cur-ch) (not (endSentence-char cur-ch)))
+                (setq res (+ res 1))
+            )	
+            (if (or (whitespace-char cur-ch) (equalp i 0))
+                (return res)
+            )
+        )
+    )
+)
+
+;(last-word-char-count #\Ы "К долинам,  покоем объятым,  ему не сойти с высоты.")
+;(last-word-char-count #\А "\"Почему здесь никого нет, - удивилась Аленка,
+- я пришла раньше или опоздала?\"")
+;(last-word-char-count #\а "\"Почему здесь никого нет, - удивилась Аленка,
+- я пришла раньше или опоздала?\"")
+;(last-word-char-count #\о "Много.")
+;(last-word-char-count #\к "Креветка.")
+;(last-word-char-count #\к "Креветка!?")
+;(last-word-char-count #\к "Двойные кавычки активно используются в 
+русском языке в машинном тексте!?")
+;(last-word-char-count #\у "Двойные кавычки активно используются в
+русском языке в машинном тексте!?")
+;(last-word-char-count #\f "Hello, my friend!")
+
+\end{verbatim}
+%\lstinputlisting{./lab2.lisp}
+
+\subsection{Результаты работы}
+\begin{verbatim}
+* (last-word-char-count #\о "Много.")
+
+2
+* (last-word-char-count #\к "Креветка!?")
+
+2
+* (last-word-char-count #\Ы "К долинам,  покоем объятым,  ему не сойти с высоты.")
+
+2
+* (last-word-char-count #\у "Двойные кавычки активно используются
+в русском языке в машинном тексте!?")
+
+0
+* (last-word-char-count #\а "\"Почему здесь никого нет, - удивилась Аленка,
+- я пришла раньше или опоздала?\"")
+
+2
+* (last-word-char-count #\А "\"Почему здесь никого нет, - удивилась Аленка,
+- я пришла раньше или опоздала?\"")
+
+2
+* (last-word-char-count #\f "Hello, my friend!")
+
+1
+\end{verbatim}
+%\lstinputlisting{./log2.lisp}
+
+\section{Дневник отладки}
+\begin{tabular}{|p{50pt}|p{130pt}|p{130pt}|p{70pt}|}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\ \hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+Замечаний нет.
+
+\section{Выводы}
+В ходе данной работы мне удалось познакомиться со встроенными функциями/интсрументами для работы со знаками и строками. Со строками я был знаком и ранее, однако было довольно интересно увидеть применение такой структуры данных в common Lisp. В моей программе алгоритм работает за линейное время O(n), где n - длина исследуемого слова.
+
+\end{document}
