@@ -1,0 +1,218 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,5 
+по курсу \guillemotleft  Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-307Б-18 МАИ \textit{Токарев Никита}, \textnumero 21 по списку \\
+\makebox[7cm]{Контакты: {\tt tokarevnikita08@mail.ru} \hfill} \\
+\makebox[7cm]{Работа выполнена: 18.04.2021 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Обобщённые функции, методы и классы объектов.
+
+\section{Цель работы}
+Изучить  обобщённые функции, методы и классы объектов, а также методы работы с ними в Коммон Лисп.
+
+\section{Задание (вариант № 5.22)}
+Определить обычную функцию - предикат line-parallel2-p,
+возвращающий T, если два отрезка (экземпляра класса line) параллельны.
+
+Причём концы отрезков могут задаваться как в декартовых (экземплярами cart), так и в полярных координатах (экземплярами polar).
+
+
+\section{Оборудование студента}
+Процессор Intel® Core™ i3-5005U CPU @ 2.00GHz × 4, память: 3,8 Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+UBUNTU 18.04.5 LTS, компилятор sbcl
+
+\section{Идея, метод, алгоритм}
+Идея в том, чтобы сравнивать прямые по значению тангенса угла, так как прямую можно представить в виде y = kx + b(соответсвенно координаты должны быть  декартовые). Также, если прямая расположена вдоль оси x, то при вычислении, k стремиться к бесконечности(то есть происходит деление на ноль), поэтому данный случай также необходимо выделить в отдельный кейс.
+\begin{itemize}
+\setlength{\itemsep}{-1mm} % уменьшает расстояние между элементами списка
+\item{(defmethod cart-x ((p polar))) - В данной функции происходит перевод из полярных координат в декартовые).}
+\item{(defmethod line-x-const ((l line))) - x_{1} ?== x_{2}}
+
+\item{(defmethod line-k ((line1 line))) - вычисление k; k = (y_{2}-y_{1}) / (x_{2}-x_{1}).}
+
+\end{itemize}
+
+\section{Сценарий выполнения работы}
+\begin{itemize}
+\setlength{\itemsep}{-1mm}
+\item Анализ возможных реализаций поставленной задачи на common Lisp
+\item Изучение синтаксиса и основных функций работы со списками common Lisp
+\item Реализация поставленной задачи на common Lisp
+\end{itemize}
+\section{Распечатка программы и её результаты}
+
+\subsection{Исходный код}
+Значения тестовых функций представлено в исходном коде.
+\begin{verbatim}
+(defclass polar ()
+    ((radius :initarg :radius :accessor radius)
+    (angle  :initarg :angle  :accessor angle)))
+
+(defclass cart ()
+    ((x :initarg :x :reader cart-x)
+    (y :initarg :y :reader cart-y)))
+
+(defclass line ()
+    ((start :initarg :start :accessor line-start)
+    (end   :initarg :end   :accessor line-end)))
+
+(defmethod cart-x ((p polar)) ; angle ~ (-pi,pi]
+    (* (radius p) (cos (angle p))))
+
+(defmethod cart-y ((p polar)) ; angle ~ (-pi,pi]
+    (* (radius p) (sin (angle p))))
+
+(defmethod line-k ((line1 line))
+    (/ (- (cart-y (line-start line1)) (cart-y (line-end line1)))
+    (- (cart-x (line-start line1)) (cart-x (line-end line1)))))
+
+(defmethod line-x-const ((l line))
+    (almost-equal (cart-x (line-start l)) (cart-x (line-end l))))
+
+(defmethod print-object ((p polar) stream)
+    (format stream "[POLAR (radius ~d angle ~d)]"
+    (radius p) (angle p)))
+
+(defmethod print-object ((c cart) stream)
+    (format stream "[CART (x ~d y ~d)]"
+    (cart-x c) (cart-y c)))
+
+(defmethod print-object ((lin line) stream)
+    (format stream "LINE (~s ~s)"
+    (line-start lin) (line-end lin)))
+
+(defun almost-equal (a b)
+    (< (abs(- a b)) 0.001))
+
+(defun line-parallel2-p (line1 line2)
+    (if (or (line-x-const line1) (line-x-const line2))
+        (if (and (line-x-const line1) (line-x-const line2)) T NIL)
+        (if (almost-equal (line-k line1) (line-k line2)) T NIL)))
+
+;(setq l1 (make-instance 'line :start (make-instance 'cart :x 1 :y 1)
+:end   (make-instance 'cart :x 0 :y -1)))
+;(setq l2 (make-instance 'line :start (make-instance 'cart :x 0 :y 2)
+:end   (make-instance 'cart :x -1 :y 0)))
+;(setq l2 (make-instance 'line :start (make-instance 'cart :x -1 :y 0)
+:end   (make-instance 'cart :x  0 :y 1)))
+;(setq l2 (make-instance 'line :start (make-instance 'polar :radius 1 
+:angle (/ pi 4)) :end   (make-instance 'cart :x  0 :y 2)))
+;(setq l2 (make-instance 'line :start (make-instance 'polar :radius 0 
+:angle 0) :end   (make-instance 'cart :x  1 :y 1)))
+;(setq l2 (make-instance 'line :start (make-instance 'cart :x 0 :y 2) 
+:end   (make-instance 'cart :x 0 :y 0)))
+;(setq l2 (make-instance 'line :start (make-instance 'polar :radius 20 
+:angle (/ pi 2)) :end   (make-instance 'polar :radius 2 :angle (- (/ pi 2)))))
+;(line-parallel2-p l1 l2)
+\end{verbatim}
+%\lstinputlisting{./lab2.lisp}
+
+\subsection{Результаты работы}
+\begin{verbatim}
+* (setq l1 (make-instance 'line :start (make-instance 'cart :x 1 :y 1) 
+:end   (make-instance 'cart :x 0 :y -1)))
+
+LINE ([CART (x 1 y 1)] [CART (x 0 y -1)])
+* (setq l2 (make-instance 'line :start (make-instance 'cart :x 0 :y 2) 
+:end   (make-instance 'cart :x -1 :y 0)))
+
+LINE ([CART (x 0 y 2)] [CART (x -1 y 0)])
+* (line-parallel2-p l1 l2)
+
+T
+* (setq l2 (make-instance 'line :start (make-instance 'cart :x -1 :y 0) 
+:end   (make-instance 'cart :x  0 :y 1)))
+
+LINE ([CART (x -1 y 0)] [CART (x 0 y 1)])
+* (line-parallel2-p l1 l2)
+
+NIL
+* (setq l2 (make-instance 'line :start (make-instance 'polar :radius 1 
+:angle (/ pi 4)) :end   (make-instance 'cart :x  0 :y 2)))
+
+LINE ([POLAR (radius 1 angle 0.7853981633974483d0)] [CART (x 0 y 2)])
+* (line-parallel2-p l1 l2)
+
+NIL
+
+LINE ([POLAR (radius 0 angle 0)] [CART (x 1 y 1)])
+* (line-parallel2-p l1 l2)
+
+NIL
+* (setq l2 (make-instance 'line :start (make-instance 'cart :x 0 :y 2) 
+:end   (make-instance 'cart :x 0 :y 0)))
+
+LINE ([CART (x 0 y 2)] [CART (x 0 y 0)])
+* (setq l1 (make-instance 'line :start (make-instance 'cart :x 3 :y 2) 
+:end   (make-instance 'cart :x 3 :y 0)))
+
+LINE ([CART (x 3 y 2)] [CART (x 3 y 0)])
+* (line-parallel2-p l1 l2)
+
+T
+* (setq l2 (make-instance 'line :start (make-instance 'polar :radius 20 
+:angle (/ pi 2)) :end   (make-instance 'polar :radius 2 :angle (- (/ pi 2)))))
+
+LINE ([POLAR (radius 20 angle 1.5707963267948966d0)]
+[POLAR (radius 2 angle -1.5707963267948966d0)])
+\end{verbatim}
+%\lstinputlisting{./log2.lisp}
+
+\section{Дневник отладки}
+\begin{tabular}{|p{50pt}|p{130pt}|p{130pt}|p{70pt}|}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\ \hline
+18.04.2021 & (defmethod line-k ((line1 line))) - ошибка из-за деления на 0 & Добавил поддержку вертикальных линий и дополнил главный предикат условием &\\
+\hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+Замечаний нет.
+
+\section{Выводы}
+В ходе данной работы мне удалось познакомиться с обобщёнными функциями, методами и классами в common Lisp. Lisp был создан за пару десятилетий до того момента, когда объектно-ориентированное программирование стало популярным. Хотел бы отметить, что  Common Lisp является полноценным объектно-ориентированным языком и в данном языке заложены основные парадигмы/принципы объектно-ориентированного программирования.
+
+\end{document}
