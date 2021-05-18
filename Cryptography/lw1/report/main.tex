@@ -1,0 +1,381 @@
+\documentclass[pdf, unicode, 12pt, a4paper,oneside,fleqn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2B]{fontenc}
+\usepackage[english,russian]{babel}
+
+\frenchspacing
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage[table]{xcolor}  
+\usepackage{array}
+\usepackage{color}
+\usepackage{xcolor}
+
+\usepackage{hyperref}
+
+
+\newcommand{\MYhref}[3][blue]{\href{#2}{\color{#1}{#3}}}%
+
+\usepackage{listings}
+\usepackage{alltt}
+\usepackage{csquotes}
+\DeclareQuoteStyle{russian}
+	{\guillemotleft}{\guillemotright}[0.025em]
+	{\quotedblbase}{\textquotedblleft}
+\ExecuteQuoteOptions{style=russian}
+
+\usepackage{graphicx}
+
+\usepackage{listings}
+\lstset{tabsize=2,
+	breaklines,
+	columns=fullflexible,
+	flexiblecolumns,
+	numbers=left,
+	numberstyle={\footnotesize},
+	extendedchars,
+	inputencoding=utf8}
+
+\usepackage{longtable}
+
+\def\@xobeysp{ }
+\def\verbatim@processline{\hspace{1.2cm}\raggedright\the\verbatim@line\par}
+
+\oddsidemargin=-0.4mm
+\textwidth=160mm
+\topmargin=4.6mm
+\textheight=210mm
+
+\parindent=0pt
+\parskip=3pt
+
+\definecolor{lightgray}{gray}{0.9}
+
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{gray},
+  identifierstyle=\color{black},
+  stringstyle=\color{blue},
+}
+
+\lstdefinestyle{customasm}{
+  belowcaptionskip=1\baselineskip,
+  frame=L,
+  xleftmargin=\parindent,
+  language=[x86masm]Assembler,
+  basicstyle=\footnotesize\ttfamily,
+  commentstyle=\itshape\color{purple!40!black},
+}
+
+\lstset{escapechar=@,style=customc}
+
+
+\newcommand{\CWPHeader}[1]{\addtocounter{section}{-1}\section{#1}}
+
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+\bfseries
+
+{\Large Московский авиационный институт\\ (национальный исследовательский университет)
+
+}
+
+\vspace{48pt}
+
+{\large Факультет информационных технологий и прикладной математики
+}
+
+\vspace{36pt}
+
+
+{\large Кафедра вычислительной математики и~программирования
+
+}
+
+
+\vspace{48pt}
+
+Лабораторная работа №1 по курсу \enquote{Криптография}
+
+\end{center}
+
+\vspace{72pt}
+
+\begin{flushright}
+\begin{tabular}{rl}
+Студент: & Токарев\ Н. С. \\
+Преподаватель: & Борисов\ А. В. \\
+Группа: & М8О-307Б-18 \\
+Дата: & \\
+Оценка: & \\
+Подпись: & \\
+\end{tabular}
+\end{flushright}
+
+\vfill
+
+\begin{center}
+\bfseries
+Москва, \the\year
+\end{center}
+\end{titlepage}
+
+\textbf{Вариант \textnumero 2}
+
+Разложить каждое из чисел представленных ниже на нетривиальные сомножители. \\
+
+{\bfseries Первое число:} \\
+
+n1 = \\
+352358118079150493187099355141629527101749106167997255509619020528333722352217 \\
+
+{\bfseries Второе число:} \\
+
+n2 = \\
+169512848540208376377324702550860778129688385180093459660532447790298989672390\\
+098441314233687038522543796524362932674511659084990877094461405769068305253980\\
+165481952276151264282270169307424982451349364468884452626363366332792106697498\\
+300154504289109043538314722171490851577202002936469515837846884472685701320555\\
+954675270470981711883452876152967636160722991943031737727674462234803964546522\\
+349706678813412341712703190842025567979822278829254837642753739546649159 \\
+
+{\bfseries Выходные данные:} \\
+Для каждого числа необходимо найти и  вывести все его множетели - простые числа.
+
+\pagebreak
+
+\section{Описание}
+
+Процесс разложения числа на его простые множетели называется факторизацией. Для решения этой задачи существует множество алгоритмов, позволяющих находить множетели, используя свойства простых чисел. \\
+
+Для решения задачи я выбрал алгоритм $\rho$-Полларда, как один из наиболее простых и эффективных. Данный алгоритм эффективен на небольших числах. Данный алгоритм можно назвать рандомизированным. \\
+
+Для чисел, десятичнных знаков меньше 100 эффективен Метод квадратичного решета, реализация которого довольно трудоемка, поэтому я решил прибегнуть к уже готовому решению,проверенному и реализованному профессионалами - программному продукту {\bfseries msieve}, который реализует в себе целый ряд алгоритмов факторизации с общим названием Общий метод решета числового поля. Этот метод считается одним из самых эффективных современных алгоритмов факторизации. \\
+
+Однако 2 число имеет более 400 квадратичных знаков, факторизация которого на обычном компьютере за разумное время практически невозможна ни одним из ныне существующих алгоритмов. Однако была дана подсказка, что один из множетелей этого числа определяется к наибольший общий делитель с одним из чисел другого варанта. Поэтому необходимо найти нод числа моего варианта и числа из другого вариант.
+Второе же число определяется как результат деления числа моего варанта на {\it НОД} (по свойству делителя). \\
+
+
+
+
+\pagebreak
+
+\section{Исходный код}
+
+Реализация алгоритма $\rho${ \it- Полларда} на языке C++.\newline
+
+\begin{lstlisting}[language=C]
+#include <iostream>
+#include <string>
+#include <gmpxx.h>
+#include <vector>
+#include <ctime>
+
+
+class po_Polard{
+public:
+    po_Polard(const mpz_class& num);
+    po_Polard(const std::string& num);
+    mpz_class get_factor();
+private:
+    mpz_class factor_of_num(mpz_class& num);
+    void Polard_GCD(mpz_class& ans, mpz_class& x, mpz_class& y);
+    void Polard_MOD(mpz_class& ans, mpz_class& x, mpz_class& y);
+    void Polard_ABSOLUTE(mpz_class& ans, mpz_class& x, mpz_class& y);
+    mpz_class number;
+};
+
+
+mpz_class po_Polard::factor_of_num(mpz_class& num){
+    mpz_class x, y, ans, absolute;
+    unsigned long long i = 0, stage = 2;
+    x = (rand() % (number - 1)) + 1;
+    y = 1;
+    Polard_ABSOLUTE(absolute, x, y);
+    Polard_GCD(ans, num, absolute);
+    while(ans == 1){
+        if(i == stage){
+            y = x;
+            stage <<= 1;
+        }
+        absolute = x * x + 1;
+        Polard_MOD(x, absolute, num);
+        ++i;
+        Polard_ABSOLUTE(absolute, x, y);
+        Polard_GCD(ans, num, absolute);
+    }
+    return ans;
+}
+
+mpz_class po_Polard::get_factor(){
+    return factor_of_num(number);
+}
+
+
+po_Polard::po_Polard(const mpz_class& num){
+    srand(time(0));
+    number = num;
+}
+
+po_Polard::po_Polard(const std::string& str){
+    srand(time(0));
+    number = str;
+}
+
+void po_Polard::Polard_ABSOLUTE(mpz_class& ans, mpz_class& x, mpz_class& y){
+    x -= y;
+    mpz_abs(ans.get_mpz_t(), x.get_mpz_t());
+    x += y;
+}
+
+
+void po_Polard::Polard_GCD(mpz_class& ans, mpz_class& x, mpz_class& y){
+    mpz_gcd(ans.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+}
+
+void po_Polard::Polard_MOD(mpz_class& ans, mpz_class& x, mpz_class& y){
+    mpz_mod(ans.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+}
+
+using namespace std;
+
+int main(){
+    // 95383 95393 
+    std::string number = "9098870519";
+    mpz_class numberBig;
+    numberBig = number; 
+    po_Polard polard(numberBig);
+    double startcl, end;
+    startcl = clock();
+    mpz_class factor = polard.get_factor();
+    std::cout << "Factor_1: " << factor << endl;
+    std::cout << "Factor_2: " << numberBig / factor << endl;
+    end = clock();
+    std::cout << "Time of working " << (end - startcl) / CLOCKS_PER_SEC << "sec" << std::endl;
+    return 0;
+}
+\end{lstlisting}
+
+\pagebreak
+
+\section{Консоль}
+
+\begin{alltt}
+nikita@nikita-HP:~/MAI/Cryptography/lw1$ g++ polard.cpp -o po -lgmpxx -lgmp
+// для числа 9098870519
+nikita@nikita-HP:~/MAI/Cryptography/lw1$ ./po
+Factor_1: 95393
+Factor_2: 95383
+Time of working 0.000304sec
+nikita@nikita-HP:~/MAI/Cryptography/lw1$ ./msieve 352358118079150493187099355141629527101749106167997255509619020528333722352217
+
+sieving in progress (press Ctrl-C to pause)
+39473 relations (19883 full + 19590 combined from 217985 partial), need 39162
+sieving complete, commencing postprocessing
+nikita@nikita-HP:~/MAI/Cryptography/lw1$ ls
+main.cpp  msieve  msieve.dat  msieve.log  po  polard.cpp  vars.txt
+nikita@nikita-HP:~/MAI/Cryptography/lw1$ cat msieve.log
+Tue May 18 22:12:28 2021  
+Tue May 18 22:12:28 2021  
+Tue May 18 22:12:28 2021  Msieve v. 1.53 (SVN unknown)
+Tue May 18 22:12:28 2021  random seeds: 6eba09df 5dbb0572
+Tue May 18 22:12:28 2021  factoring 352358118079150493187099355141629527101749106167997255509619020528333722352217 (78 digits)
+Tue May 18 22:12:28 2021  no P-1/P+1/ECM available, skipping
+Tue May 18 22:12:28 2021  commencing quadratic sieve (78-digit input)
+Tue May 18 22:12:28 2021  using multiplier of 13
+Tue May 18 22:12:28 2021  using generic 32kb sieve core
+Tue May 18 22:12:28 2021  sieve interval: 12 blocks of size 32768
+Tue May 18 22:12:28 2021  processing polynomials in batches of 17
+Tue May 18 22:12:28 2021  using a sieve bound of 999269 (39066 primes)
+Tue May 18 22:12:28 2021  using large prime bound of 99926900 (26 bits)
+Tue May 18 22:12:28 2021  using trial factoring cutoff of 27 bits
+Tue May 18 22:12:28 2021  polynomial 'A' values have 10 factors
+Tue May 18 22:17:47 2021  39473 relations (19883 full + 19590 combined from 217985 partial), need 39162
+Tue May 18 22:17:47 2021  begin with 237868 relations
+Tue May 18 22:17:47 2021  reduce to 56619 relations in 2 passes
+Tue May 18 22:17:47 2021  attempting to read 56619 relations
+Tue May 18 22:17:47 2021  recovered 56619 relations
+Tue May 18 22:17:47 2021  recovered 47705 polynomials
+Tue May 18 22:17:48 2021  attempting to build 39473 cycles
+Tue May 18 22:17:48 2021  found 39473 cycles in 1 passes
+Tue May 18 22:17:48 2021  distribution of cycle lengths:
+Tue May 18 22:17:48 2021     length 1 : 19883
+Tue May 18 22:17:48 2021     length 2 : 19590
+Tue May 18 22:17:48 2021  largest cycle: 2 relations
+Tue May 18 22:17:48 2021  matrix is 39066 x 39473 (5.7 MB) with weight 1169900 (29.64/col)
+Tue May 18 22:17:48 2021  sparse part has weight 1169900 (29.64/col)
+Tue May 18 22:17:48 2021  filtering completed in 3 passes
+Tue May 18 22:17:48 2021  matrix is 28409 x 28472 (4.4 MB) with weight 923483 (32.43/col)
+Tue May 18 22:17:48 2021  sparse part has weight 923483 (32.43/col)
+Tue May 18 22:17:48 2021  saving the first 48 matrix rows for later
+Tue May 18 22:17:48 2021  matrix includes 64 packed rows
+Tue May 18 22:17:48 2021  matrix is 28361 x 28472 (2.6 MB) with weight 609214 (21.40/col)
+Tue May 18 22:17:48 2021  sparse part has weight 392291 (13.78/col)
+Tue May 18 22:17:48 2021  commencing Lanczos iteration
+Tue May 18 22:17:48 2021  memory use: 2.6 MB
+Tue May 18 22:17:57 2021  lanczos halted after 450 iterations (dim = 28359)
+Tue May 18 22:17:57 2021  recovered 17 nontrivial dependencies
+Tue May 18 22:17:57 2021  p39 factor: 562068224324090847465842314308226273321
+Tue May 18 22:17:57 2021  p39 factor: 626895637985717823820028254946860326577
+Tue May 18 22:17:57 2021  elapsed time 00:05:29
+nikita@nikita-HP:~/MAI/Cryptography/lw1$ g++ main.cpp -o po -lgmpxx -lgmp
+nikita@nikita-HP:~/MAI/Cryptography/lw1$ ./po
+index: 38
+factor 1:  14182411129325500872865152389301941374543994360578002782653424718793884397\\
+    29876792044475447007841811905319665937701857945530598126727452216259201033\\
+    29054560319898106605336908519479988189937173062342054739671406574484612829\\
+    35146101616275149368712355280589546312944913877210334190591317035097747082\\
+factor 2: 11952329332048507049521674438309669666876305045544046285616098908190\\
+    25337796871143521226488456385986998003807035541857003167339221122102\\
+    8300427760745838691
+\end{alltt}
+
+\pagebreak
+
+\section{Ответ}
+{\bfseries Разложение первого числа:}
+\begin{itemize}
+    \item 562068224324090847465842314308226273321
+    \item 626895637985717823820028254946860326577
+\end{itemize}
+
+
+{\bfseries Разложение второго числа:}
+\begin{itemize}
+    \item 
+    14182411129325500872865152389301941374543994360578002782653424718793884397\\
+    29876792044475447007841811905319665937701857945530598126727452216259201033\\
+    29054560319898106605336908519479988189937173062342054739671406574484612829\\
+    35146101616275149368712355280589546312944913877210334190591317035097747082\\
+    6523504806349
+    \item 11952329332048507049521674438309669666876305045544046285616098908190\\
+    25337796871143521226488456385986998003807035541857003167339221122102\\
+    8300427760745838691
+\end{itemize}
+
+\pagebreak
+
+\section{Выводы}
+В ходе данной работы я познакомился с операцией факторизации чисел. В основу криптографической системы с открытым ключом RSA положена сложность задачи факторизации произведения двух больших простых чисел.
+В RSA: Закрытый и открытый ключ представляет собой пару чисел. Произведение двух простых чисел случайной размерности будет являться участником пары чисел как в открытом, так и в закрытом ключе.
+\newline
+Таким образом с помощью факторизации, зная произведение простых чисел, можно найти данные простые числа случайной размерности. Данное решение позволит получить необходимые числа и воспроизвести открытый и закрытый ключ, однако на текущий момент при существующих алгоритмах такое вычисление крайне сложно и требует очень много вычислительных мощностей и времени.
+\pagebreak
+
+\end{document}
